@@ -3,125 +3,81 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace AlpacaVM
 {
-    class Instruction
-    {
-        
-        public Instruction(InstructionHead i)
-        {
-            
-        }
-        
-    }
-    class InstructionSet
-    {
-
-    }
-
-    class Stack
-    {
-        private int[] data = new int[65536];
-        private UInt32 begin = 0;
-        private UInt32 end = 65535;
-        private int count = 0;
-        public void Push(int i)
-        {
-            if (end == 65535)
-            {
-                end = 0;
-                data[end] = i;
-            }
-            else
-            {
-                data[++end] = i;
-            }
-        }
-        public int GetTheTopItem()
-        {
-            try
-            {
-                if (count != 0)
-                {
-                    return data[end];
-                }
-                else
-                {
-                    throw new System.InvalidOperationException();
-                }
-            }catch(System.InvalidOperationException e)
-            {
-                Console.WriteLine(e.ToString());
-                System.Environment.Exit(1);
-                return 0;
-            }
-        }
-        public int GetTheNthItem(UInt32 n)
-        {
-            return data[end + 1 - n];
-        }
-        public void CopyTheNthItemOntoTheTop(UInt32 n)
-        {
-            this.Push(GetTheNthItem(n));
-        }
-        public void CopyTheTopItemOntoTheTop(UInt32 n)
-        {
-            this.Push(GetTheTopItem());
-        }
-        public void Swap()
-        {
-            try
-            {
-                if (count >= 2)
-                {
-                    int temp = data[end];
-                    data[end] = data[end - 1];
-                    data[end - 1] = temp;
-                }
-                else
-                {
-                    throw new System.InvalidOperationException();
-                }
-            }
-            catch (System.InvalidOperationException e)
-            {
-                Console.WriteLine(e.ToString());
-                System.Environment.Exit(1);
-            }
-        }
-    public void Discard()
-        {
-            try
-            {
-                if (count > 0)
-                {
-                    end--;
-                    count--;
-                }
-                else
-                {
-                    throw new System.InvalidOperationException();
-                }
-            }
-            catch (System.InvalidOperationException e)
-            {
-                Console.WriteLine(e.ToString());
-                System.Environment.Exit(1);
-            }
-        }
-
-
-    }
-    class Heap
-    {
-
-    }
 
     class Program
     {
+
+
+        static Encoding GetEncoding(FileStream f)
+        {
+            BinaryReader br = new BinaryReader(f);
+            Byte[] buffer = br.ReadBytes(2);
+            f.Position = 0;
+            if (buffer[0] >= 0xEF)
+            {
+                if (buffer[0] == 0xEF && buffer[1] == 0xBB)
+                {
+                    return Encoding.UTF8;
+                }
+                else if (buffer[0] == 0xFE && buffer[1] == 0xFF)
+                {
+                    return Encoding.BigEndianUnicode;
+                }
+                else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+                {
+                    return Encoding.Unicode;
+                }
+                else
+                {
+                    return Encoding.Default;
+                }
+            }
+            else
+            {
+                return Encoding.Default;
+            }
+
+        }
+
         static void Main(string[] args)
         {
+            FileStream f;
+            StreamReader s;
+            try
+            {
+                f = new FileStream("a.txt", FileMode.Open, FileAccess.Read);
+                s = new StreamReader(f, GetEncoding(f));
+                Compiler c = new Compiler(s, new InstructionSet());
+                Console.WriteLine(s.Read());
+                Console.WriteLine(s.Read());
+                Console.WriteLine(s.Read());
+                Console.WriteLine(s.Read());
+                Console.WriteLine(s.Read());
+
+                FileStream t = new FileStream("t.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                StreamWriter tt = new StreamWriter(t);
+                for(int i = 0; i <= 40; i++)
+                {
+                    tt.WriteLine("                case "+i+":");
+                    tt.WriteLine("                    break;");
+                }
+
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.ToString());// "File \"" + inputFilePath + "\" not found.");
+                System.Environment.Exit(1);
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.ToString()); //Console.WriteLine("File \"" + inputFilePath + "\" is not reachable.");
+                System.Environment.Exit(1);
+            }
+
         }
     }
 }
