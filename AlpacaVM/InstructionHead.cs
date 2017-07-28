@@ -10,12 +10,12 @@
     };
     enum StackOperation
     {
-        Push = 0,
+        PushN = 0,
         Duplicate = 1,
         CopyN = 2,
         Swap = 3,
         Discard = 4,
-        DiscardN = 5,
+        SlideN = 5,
     };
     enum HeapOperation
     {
@@ -40,11 +40,11 @@
     }
     enum FlowOperation
     {
-        MakeLocation = 0,
-        CallSub = 1,
-        Jump = 2,
-        JumpIfZero = 3,
-        JumpIfNeg = 4,
+        MakeLocationN = 0,
+        CallSubN = 1,
+        JumpN = 2,
+        JumpIfZeroN = 3,
+        JumpIfNegN = 4,
         EndSub = 5,
         EndProgram = 6,
     }

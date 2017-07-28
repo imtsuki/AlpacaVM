@@ -117,7 +117,8 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     number = ReadInteger();
-                                    //Push
+                                    Set.Add(new Instruction(StackOperation.PushN,number));
+                                    //PushN
                                     stat = -1;
                                     break;
                                 case Word.泥:
@@ -162,20 +163,19 @@ namespace AlpacaVM
                                     throw new System.Exception();
                             }
                             break;
-                        case 3:
-                            
-                            break;
                         case 4:
                             switch (word)
                             {
                                 case Word.草:
                                     //CopyN
                                     number = ReadInteger();
+                                    Set.Add(new Instruction(StackOperation.CopyN, number));
                                     stat = -1;
                                     break;
                                 case Word.马:
-                                    //Slide
+                                    //SlideN
                                     number = ReadInteger();
+                                    Set.Add(new Instruction(StackOperation.SlideN, number));
                                     stat = -1;
                                     break;
                                 default:
@@ -187,34 +187,22 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     //Duplicate
+                                    Set.Add(new Instruction(StackOperation.Duplicate));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //Swap
+                                    Set.Add(new Instruction(StackOperation.Swap));
                                     stat = -1;
                                     break;
                                 case Word.马:
                                     //Discard
+                                    Set.Add(new Instruction(StackOperation.Discard));
                                     stat = -1;
                                     break;
                                 default:
                                     throw new System.Exception();
                             }
-                            break;
-                        case 6:
-                            
-                            break;
-                        case 7:
-                            
-                            break;
-                        case 8:
-                            
-                            break;
-                        case 9:
-                            
-                            break;
-                        case 10:
-                            
                             break;
                         case 11:
                             switch (word)
@@ -234,10 +222,12 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     //Store
+                                    Set.Add(new Instruction(HeapOperation.Store));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //Retrieve
+                                    Set.Add(new Instruction(HeapOperation.Retrieve));
                                     stat = -1;
                                     break;
                                 default:
@@ -262,14 +252,17 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     //Addition
+                                    Set.Add(new Instruction(ArithmeticOperation.Addition));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //Subtraction
+                                    Set.Add(new Instruction(ArithmeticOperation.Subtraction));
                                     stat = -1;
                                     break;
                                 case Word.马:
                                     //Multiplication
+                                    Set.Add(new Instruction(ArithmeticOperation.Multiplication));
                                     stat = -1;
                                     break;
                                 default:
@@ -281,31 +274,29 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     //IntegerDivision
+                                    Set.Add(new Instruction(ArithmeticOperation.IntegerDivision));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //Modulo
+                                    Set.Add(new Instruction(ArithmeticOperation.IntegerDivision));
                                     stat = -1;
                                     break;
                                 default:
                                     throw new System.Exception();
                             }
                             break;
-                        case 16:
-                            
-                            break;
-                        case 17:
-                            
-                            break;
                         case 18:
                             switch (word)
                             {
                                 case Word.草:
                                     //OutputAsChar
-                            stat = -1;
+                                    Set.Add(new Instruction(IOOperation.OutputAsChar));
+                                    stat = -1;
                                     break;
                                 case Word.泥:
                                     //OutputAsNumber
+                                    Set.Add(new Instruction(IOOperation.OutputAsNumber));
                                     stat = -1;
                                     break;
                                 default:
@@ -317,42 +308,17 @@ namespace AlpacaVM
                             {
                                 case Word.草:
                                     //InputAsChar
+                                    Set.Add(new Instruction(IOOperation.InputAsChar));
                                     stat = -1;
                                     break;
                                 case Word.泥:
-                                    //OutputAsNumber
+                                    //InputAsNumber
+                                    Set.Add(new Instruction(IOOperation.InputAsNumber));
                                     stat = -1;
                                     break;
                                 default:
                                     throw new System.Exception();
                             }
-                            break;
-                        case 20:
-                            
-                            break;
-                        case 21:
-                            
-                            break;
-                        case 22:
-                            
-                            break;
-                        case 23:
-                            
-                            break;
-                        case 24:
-                            
-                            break;
-                        case 25:
-                            
-                            break;
-                        case 26:
-                            
-                            break;
-                        case 27:
-                            
-                            break;
-                        case 28:
-                            
                             break;
                         case 29:
                             switch (word)
@@ -360,16 +326,20 @@ namespace AlpacaVM
                                 case Word.草:
                                     //MakeLocation
                                     number = ReadUnsignedInteger();
+                                    Set.Add(new Instruction(FlowOperation.MakeLocationN,number));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //CallSub
                                     number = ReadUnsignedInteger();
+                                    Set.Add(new Instruction(FlowOperation.CallSubN, number));
                                     stat = -1;
                                     break;
                                 case Word.马:
+
                                     //Jump
                                     number = ReadUnsignedInteger();
+                                    Set.Add(new Instruction(FlowOperation.JumpN, number));
                                     stat = -1;
                                     break;
                                 default:
@@ -382,15 +352,18 @@ namespace AlpacaVM
                                 case Word.草:
                                     //JumpIfZero
                                     number = ReadUnsignedInteger();
+                                    Set.Add(new Instruction(FlowOperation.JumpIfZeroN, number));
                                     stat = -1;
                                     break;
                                 case Word.泥:
                                     //JumpIfNeg
                                     number = ReadUnsignedInteger();
+                                    Set.Add(new Instruction(FlowOperation.JumpIfNegN, number));
                                     stat = -1;
                                     break;
                                 case Word.马:
                                     //EndSub
+                                    Set.Add(new Instruction(FlowOperation.EndSub));
                                     stat = -1;
                                     break;
                                 default:
@@ -401,40 +374,21 @@ namespace AlpacaVM
                             switch (word)
                             {
                                 case Word.马:
-
                                     //EndProgram
+                                    Set.Add(new Instruction(FlowOperation.EndProgram));
                                     stat = -1;
                                     break;
                                 default:
                                     throw new System.Exception();
                             }
                             break;
-                        case 32:
-                            
-                            break;
-                        case 33:
-                            
-                            break;
-                        case 34:
-                            
-                            break;
-                        case 35:
-                            
-                            break;
-                        case 36:
-                            
-                            break;
-                        case 37:
-                            
-                            break;
-                        case 38:
-                            
-                            break;
                         case 39:
                             switch (word)
                             {
                                 case Word.蟹:
-                                    stat = 38;
+                                    //EndProgram
+                                    Set.Add(new Instruction(FlowOperation.EndProgram));
+                                    stat = -1;
                                     break;
                                 default:
                                     throw new System.Exception();
@@ -445,11 +399,9 @@ namespace AlpacaVM
             }
             catch (System.Exception e)
             {
-                System.Console.WriteLine("Syntax Error!"+stat);
-
+                System.Console.WriteLine("Syntax Error! Error Code " + stat);
                 System.Environment.Exit(1);
             }
-            
             
         }
     }

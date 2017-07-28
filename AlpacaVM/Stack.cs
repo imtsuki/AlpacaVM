@@ -5,10 +5,10 @@ namespace AlpacaVM
     class Stack
     {
         private int[] data = new int[65536];
-        private UInt32 begin = 0;
-        private UInt32 end = 65535;
+        private int begin = 0;
+        private int end = 65535;
         private int count = 0;
-        public void Push(int i)
+        public void PushN(int i)
         {
             if (end == 65535)
             {
@@ -19,37 +19,43 @@ namespace AlpacaVM
             {
                 data[++end] = i;
             }
+            count++;
         }
-        public int GetTheTopItem()
+        public int TopItem
         {
-            try
+            get
             {
-                if (count != 0)
+                try
                 {
-                    return data[end];
+                    if (count != 0)
+                    {
+                        return data[end];
+                    }
+                    else
+                    {
+                        throw new System.InvalidOperationException();
+                    }
                 }
-                else
+                catch (System.InvalidOperationException e)
                 {
-                    throw new System.InvalidOperationException();
+                    Console.WriteLine(e.ToString());
+                    System.Environment.Exit(1);
+                    return 0;
                 }
-            }catch(System.InvalidOperationException e)
-            {
-                Console.WriteLine(e.ToString());
-                System.Environment.Exit(1);
-                return 0;
             }
         }
-        public int GetTheNthItem(UInt32 n)
+
+        public int GetTheNthItem(int n)
         {
             return data[end + 1 - n];
         }
-        public void CopyTheNthItemOntoTheTop(UInt32 n)
+        public void CopyTheNthItemOntoTheTop(int n)
         {
-            this.Push(GetTheNthItem(n));
+            this.PushN(GetTheNthItem(n));
         }
-        public void CopyTheTopItemOntoTheTop(UInt32 n)
+        public void Duplicate()
         {
-            this.Push(GetTheTopItem());
+            this.PushN(TopItem);
         }
         public void Swap()
         {
@@ -92,7 +98,12 @@ namespace AlpacaVM
                 System.Environment.Exit(1);
             }
         }
-
+        public int Pop()
+        {
+            int result = this.TopItem;
+            this.Discard();
+            return result;
+        }
 
     }
 }

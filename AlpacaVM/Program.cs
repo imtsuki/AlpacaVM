@@ -49,22 +49,24 @@ namespace AlpacaVM
             StreamReader s;
             try
             {
-                f = new FileStream("a.txt", FileMode.Open, FileAccess.Read);
+                if (args.Length == 0)
+                {
+                    Console.WriteLine("No input files. ");
+                    Environment.Exit(1);
+                }
+                f = new FileStream(args[0], FileMode.Open, FileAccess.Read);
                 s = new StreamReader(f, GetEncoding(f));
                 Compiler c = new Compiler(s, new InstructionSet());
-                Console.WriteLine(s.Read());
-                Console.WriteLine(s.Read());
-                Console.WriteLine(s.Read());
-                Console.WriteLine(s.Read());
-                Console.WriteLine(s.Read());
-
-                FileStream t = new FileStream("t.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                Stack stack = new Stack();
+                VM vm = new VM(stack, new Heap(stack), c.Set);
+                Console.WriteLine("The program ended successfully with exit code " + vm.Start()+ ". ");
+               /* FileStream t = new FileStream("t.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter tt = new StreamWriter(t);
                 for(int i = 0; i <= 40; i++)
                 {
                     tt.WriteLine("                case "+i+":");
                     tt.WriteLine("                    break;");
-                }
+                }*/
 
             }
             catch (FileNotFoundException e)
